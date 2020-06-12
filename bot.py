@@ -6,8 +6,9 @@ import discord
 from discord.ext import commands
 from dotenv import load_dotenv
 import logging
+import sys
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 load_dotenv()
@@ -64,7 +65,11 @@ async def tldr(ctx, channel: discord.TextChannel):
     result = model(summ_messages, min_length=100)
     summary = ''.join(result)
 
-    await ctx.send(summary)
+    logger.info('Summary: {}'.format(summary))
 
+    return_message = "**Summary of channel: {}** \n {}".format(channel.name, summary)
+
+    author = ctx.author
+    await author.send(return_message)
 
 bot.run(TOKEN)
